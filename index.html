@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منصة الخدمات التطويرية - AI</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>منصة الخدمات التطويرية</h1>
+    <nav class="app-nav">
+      <button id="btn-settings" class="btn secondary">الإعدادات</button>
+      <button id="btn-auth" class="btn">تسجيل الدخول</button>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <aside class="sidebar" id="conversations">
+      <div class="sidebar-header">
+        <h2>المحادثات</h2>
+        <button id="btn-new-conv" class="btn small">+ جديدة</button>
+      </div>
+      <ul id="conv-list" class="list"></ul>
+    </aside>
+
+    <section class="chat" id="chat">
+      <div id="chat-messages" class="messages"></div>
+      <form id="chat-form" class="chat-input" autocomplete="off">
+        <input id="chat-text" type="text" placeholder="اكتب سؤالك..." />
+        <button id="btn-send" type="submit" class="btn">إرسال</button>
+        <label class="file-upload">
+          <input type="file" id="file-input" accept=".pdf,.txt,.md" />
+          <span>رفع ملف</span>
+        </label>
+      </form>
+    </section>
+  </main>
+
+  <dialog id="settings-dialog" class="settings">
+    <form method="dialog">
+      <h3>إعدادات الذكاء الاصطناعي</h3>
+      <label>
+        مزوّد الذكاء
+        <select id="ai-provider">
+          <option value="chatgpt5">ChatGPT-5</option>
+          <option value="api">API AI Platform</option>
+        </select>
+      </label>
+      <label>
+        المفتاح (لن يُحفظ كنص واضح)
+        <input id="ai-api-key" type="password" placeholder="أدخل مفتاحك" />
+      </label>
+      <label>
+        النموذج
+        <input id="ai-model" type="text" value="gpt-5.0" />
+      </label>
+      <label>
+        Temperature
+        <input id="ai-temp" type="number" step="0.1" min="0" max="2" value="0.7" />
+      </label>
+      <menu>
+        <button value="cancel" class="btn secondary">إلغاء</button>
+        <button id="btn-save-settings" value="default" class="btn">حفظ</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="assets/config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
+
+

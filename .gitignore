@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn.lock
+package-lock.json
+
+# Local env
+.env
+.env.*
+
+# Netlify
+.netlify/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build/output
+/dist/
+/build/
+
+# Local Netlify folder
+.netlify
