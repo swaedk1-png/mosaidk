@@ -3,17 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>منصة الخدمات التطويرية - AI</title>
+  <meta name="description" content="شركة الحلول التطويرية - نقدم حلولاً تقنية متكاملة: تحليل الاحتياج، تصميم الحلول، تطوير المشاريع الكاملة، والنشر" />
+  <title>شركة الحلول التطويرية - نحوّل أفكارك إلى منتجات رقمية</title>
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>منصة الخدمات التطويرية</h1>
+    <div class="brand">
+      <div class="logo-circle">AI</div>
+      <div class="brand-text">
+        <h1>شركة الحلول التطويرية</h1>
+        <p class="brand-tagline">نحوّل أفكارك إلى منتجات رقمية متقدمة</p>
+      </div>
+    </div>
     <nav class="app-nav">
+      <button id="btn-theme" class="btn secondary" title="تبديل المظهر">المظهر</button>
       <button id="btn-settings" class="btn secondary">الإعدادات</button>
       <button id="btn-auth" class="btn">تسجيل الدخول</button>
     </nav>
   </header>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge">شركة متخصصة في الحلول التطويرية</div>
+      <h2>نحوّل أفكارك إلى منتجات رقمية متقدمة</h2>
+      <p class="hero-description">نحن شركة تطويرية تقدم حلولاً تقنية شاملة: من دراسة الاحتياج وتحليل المتطلبات، إلى تصميم الحلول التقنية، وتطوير المشاريع الكاملة، ونشرها وتشغيلها.</p>
+      <div class="hero-ctas">
+        <a href="#services" class="btn">تعرف على خدماتنا</a>
+        <button id="cta-start" class="btn secondary">ابدأ مشروعك الآن</button>
+      </div>
+    </div>
+  </section>
 
   <main class="app-main">
     <aside class="sidebar" id="conversations">
@@ -21,21 +41,90 @@
         <h2>المحادثات</h2>
         <button id="btn-new-conv" class="btn small">+ جديدة</button>
       </div>
+      <div class="sidebar-search">
+        <input id="conv-search" type="search" placeholder="ابحث في المحادثات" />
+      </div>
       <ul id="conv-list" class="list"></ul>
     </aside>
 
     <section class="chat" id="chat">
-      <div id="chat-messages" class="messages"></div>
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <h3>دردشة</h3>
+          <span id="chat-status" class="status-indicator" title="جاهز">●</span>
+        </div>
+      </div>
+      <div id="chat-messages" class="messages">
+        <div id="empty-state" class="empty">
+          ابدأ محادثة جديدة أو اختر محادثة من القائمة.
+        </div>
+      </div>
+      <div class="quick-actions" id="quick-actions">
+        <button class="quick-btn" data-prompt="شرح شيء معقد">🤓 شرح شيء معقد</button>
+        <button class="quick-btn" data-prompt="احصل على اقتراحات وأنشئ أفكارًا جديدة">🧠 أفكار جديدة</button>
+        <button class="quick-btn" data-prompt="ترجمة، تلخيص، تصحيح النحو والمزيد">💭 ترجمة وتلخيص</button>
+      </div>
       <form id="chat-form" class="chat-input" autocomplete="off">
-        <input id="chat-text" type="text" placeholder="اكتب سؤالك..." />
-        <button id="btn-send" type="submit" class="btn">إرسال</button>
-        <label class="file-upload">
-          <input type="file" id="file-input" accept=".pdf,.txt,.md" />
-          <span>رفع ملف</span>
+        <label class="file-upload-btn" title="رفع ملف">
+          <input type="file" id="file-input" accept=".pdf,.txt,.md,.doc,.docx,.jpg,.png" />
+          <span class="icon">📎</span>
         </label>
+        <div class="input-wrapper">
+          <input id="chat-text" type="text" placeholder="اكتب رسالتك هنا..." />
+          <button id="btn-send" type="submit" class="send-btn" title="إرسال">
+            <span class="send-icon">➤</span>
+          </button>
+        </div>
       </form>
+      <div id="typing" class="typing hidden">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="typing-text">جاري الكتابة...</span>
+      </div>
     </section>
   </main>
+
+  <section class="services" id="services">
+    <div class="services-header">
+      <h3>خدماتنا التطويرية</h3>
+      <p>نقدم حلولاً تقنية متكاملة لدعم مشاريعك من البداية للنهاية</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="card-icon">📋</div>
+        <h4>تحليل الاحتياج والتخطيط</h4>
+        <p>دراسة شاملة لمتطلبات مشروعك وتحليل دقيق للمجال التقني المناسب مع اقتراحات جاهزة للتنفيذ.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">📊</div>
+        <h4>مقترحات تقنية وتقارير</h4>
+        <p>إعداد مقترحات تقنية كاملة (SOW/Proposal) تشمل المراحل والجداول الزمنية وتحليل المخاطر والتقديرات الدقيقة.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">⚙️</div>
+        <h4>تطوير المشاريع والنشر</h4>
+        <p>تطوير مشاريع كاملة من الصفر مع ربط تلقائي بـ GitHub ونشر فوري على منصات الاستضافة الحديثة.</p>
+      </article>
+      <article class="card">
+        <div class="card-icon">💬</div>
+        <h4>دعم تقني مستمر</h4>
+        <p>مساعد ذكي يفهم سياق مشروعك وملفاتك ويدعم عملية التطوير بشكل مستمر وفعّال.</p>
+      </article>
+    </div>
+  </section>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>شركة الحلول التطويرية</h4>
+        <p>نحوّل أفكارك إلى منتجات رقمية متقدمة بسرعة واحترافية</p>
+      </div>
+      <div class="footer-section">
+        <span>© 2025 شركة الحلول التطويرية</span>
+        <span class="sep">·</span>
+        <span>جميع الحقوق محفوظة</span>
+      </div>
+    </div>
+  </footer>
 
   <dialog id="settings-dialog" class="settings">
     <form method="dialog">
@@ -43,6 +132,7 @@
       <label>
         مزوّد الذكاء
         <select id="ai-provider">
+          <option value="openai">OpenAI (GPT-4o)</option>
           <option value="chatgpt5">ChatGPT-5</option>
           <option value="api">API AI Platform</option>
         </select>
@@ -53,7 +143,7 @@
       </label>
       <label>
         النموذج
-        <input id="ai-model" type="text" value="gpt-5.0" />
+        <input id="ai-model" type="text" value="gpt-4o" placeholder="مثال: gpt-4o, gpt-4-turbo" />
       </label>
       <label>
         Temperature
@@ -69,6 +159,7 @@
   <script src="assets/config.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="assets/app.js" defer></script>
+  <div id="toasts" class="toasts" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>
 
