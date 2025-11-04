@@ -133,9 +133,16 @@
         مزوّد الذكاء
         <select id="ai-provider">
           <option value="openai">OpenAI (GPT-4o)</option>
+          <option value="n8n">n8n AI Assistant</option>
           <option value="chatgpt5">ChatGPT-5</option>
           <option value="api">API AI Platform</option>
+          <option value="custom">مخصص (Custom)</option>
         </select>
+      </label>
+      <label>
+        Base URL (اختياري - يُستخدم فقط للمزود المخصص)
+        <input id="ai-base-url" type="text" placeholder="https://api.openai.com/v1" />
+        <small style="opacity: 0.7; font-size: 12px;">مثال: https://ai-assistant.n8n.io/v1/ai-credits/proxy/v1</small>
       </label>
       <label>
         المفتاح (لن يُحفظ كنص واضح)

@@ -18,6 +18,7 @@
     settingsDialog: document.getElementById('settings-dialog'),
     btnAuth: document.getElementById('btn-auth'),
     provider: document.getElementById('ai-provider'),
+    baseUrl: document.getElementById('ai-base-url'),
     apiKey: document.getElementById('ai-api-key'),
     model: document.getElementById('ai-model'),
     temp: document.getElementById('ai-temp'),
@@ -69,12 +70,32 @@
     setTimeout(() => node.remove(), 4000);
   }
 
-  function selectConversation(id) {
+  async function selectConversation(id) {
     state.activeConversationId = id;
     els.chatMessages.innerHTML = '';
     const empty = document.getElementById('empty-state');
     if (empty) empty.remove();
-    showWelcomeMessage();
+
+    try {
+      const { data: messages, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+          addMessage(msg.role, msg.content);
+        });
+      } else {
+        showWelcomeMessage();
+      }
+    } catch (e) {
+      toast('فشل تحميل الرسائل: ' + e.message);
+      showWelcomeMessage();
+    }
   }
 
   function showWelcomeMessage() {
@@ -102,12 +123,43 @@
   }
 
   async function createConversation() {
-    const id = crypto.randomUUID();
-    const title = `محادثة #${state.conversations.length + 1}`;
-    state.conversations.unshift({ id, title });
-    renderConversations();
-    selectConversation(id);
-    els.chatText.focus();
+    try {
+      const { data: newConv, error } = await supabase
+        .from('conversations')
+        .insert({ title: `محادثة #${state.conversations.length + 1}` })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      state.conversations.unshift({ id: newConv.id, title: newConv.title });
+      renderConversations();
+      selectConversation(newConv.id);
+      els.chatText.focus();
+    } catch (e) {
+      toast('فشل إنشاء المحادثة: ' + e.message);
+    }
+  }
+
+  async function loadConversations() {
+    try {
+      const { data: conversations, error } = await supabase
+        .from('conversations')
+        .select('id, title, created_at')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      state.conversations = conversations || [];
+      renderConversations();
+
+      if (state.conversations.length > 0 && !state.activeConversationId) {
+        selectConversation(state.conversations[0].id);
+      }
+    } catch (e) {
+      console.error('Error loading conversations:', e);
+    }
   }
 
   function getAISettings() {
@@ -118,7 +170,8 @@
       } catch (e) {}
     }
     return {
-      provider: 'chatgpt5',
+      provider: 'openai',
+      baseUrl: '',
       model: 'gpt-4o',
       temperature: 0.7,
       apiKey: '',
@@ -128,6 +181,7 @@
   function saveAISettings() {
     const settings = {
       provider: els.provider.value,
+      baseUrl: els.baseUrl.value.trim(),
       model: els.model.value,
       temperature: parseFloat(els.temp.value),
       apiKey: els.apiKey.value,
@@ -138,11 +192,28 @@
 
   function loadAISettings() {
     const settings = getAISettings();
-    els.provider.value = settings.provider || 'chatgpt5';
+    els.provider.value = settings.provider || 'openai';
     els.model.value = settings.model || 'gpt-4o';
     els.temp.value = settings.temperature || 0.7;
+    els.baseUrl.value = settings.baseUrl || '';
     if (settings.apiKey) {
       els.apiKey.value = settings.apiKey;
+    }
+    updateBaseUrlVisibility();
+  }
+
+  function updateBaseUrlVisibility() {
+    const provider = els.provider.value;
+    const baseUrlLabel = els.baseUrl.closest('label');
+    if (baseUrlLabel) {
+      if (provider === 'custom' || provider === 'n8n') {
+        baseUrlLabel.style.display = 'block';
+        if (provider === 'n8n' && !els.baseUrl.value) {
+          els.baseUrl.value = 'https://ai-assistant.n8n.io/v1/ai-credits/proxy/v1';
+        }
+      } else {
+        baseUrlLabel.style.display = 'none';
+      }
     }
   }
 
@@ -170,8 +241,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          conversationId: state.activeConversationId,
           messages: [{ role: 'user', content: text }],
           provider: settings.provider,
+          baseUrl: settings.baseUrl,
           model: settings.model,
           temperature: settings.temperature,
           apiKey: settings.apiKey,
@@ -185,6 +258,12 @@
 
       const data = await res.json();
       addMessage('assistant', data.reply || data.error || 'لا توجد استجابة');
+      
+      // تحديث conversationId إذا تم إنشاء محادثة جديدة
+      if (data.conversationId && !state.activeConversationId) {
+        state.activeConversationId = data.conversationId;
+        await loadConversations();
+      }
     } catch (e) {
       const errorMsg = e.message || 'حدث خطأ، حاول مرة أخرى.';
       toast(errorMsg);
@@ -240,6 +319,8 @@
     loadAISettings();
     els.settingsDialog.showModal();
   });
+
+  els.provider.addEventListener('change', updateBaseUrlVisibility);
   
   els.btnSaveSettings.addEventListener('click', (e) => {
     e.preventDefault();
@@ -281,7 +362,11 @@
   // Init
   loadAISettings();
   initQuickActions();
-  createConversation();
+  loadConversations().then(() => {
+    if (state.conversations.length === 0) {
+      createConversation();
+    }
+  });
   updateChatStatus('ready');
 })();
 
